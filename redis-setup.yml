@@ -1,0 +1,21 @@
+---
+- name: node1 redis setup
+  hosts: node1
+  become_user: root
+  become: yes
+  roles:
+    - redis
+
+- name: node2 redis setup
+  hosts: node2
+  become_user: root
+  become: yes
+  roles:
+    - redis
+
+- name: node3 redis setup
+  hosts: node3
+  become_user: root
+  become: yes
+  roles:
+    - redis

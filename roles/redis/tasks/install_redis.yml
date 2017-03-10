@@ -1,0 +1,30 @@
+---
+# This file downloads and installs the redis dependancies to the nodes
+# Initial variables are stored in the ../defaults/main.yml in this role
+- name: Verify that the redis directory does not exist
+  stat:
+    path: /{{ redis_install_dir }}/{{ redis_version }}
+  register: redis_status
+
+- name: Downloading redis tar package
+  get_url:
+    url: http://download.redis.io/releases/{{ redis_version }}{{ redis_package_extension }}
+    dest: /{{ redis_download_path }}
+  when: redis_status.stat.exists == false or redis_status.stat.isdir == false
+
+- name: Unzipping redis tarball
+  unarchive:
+    src: /{{ redis_download_path }}/{{ redis_version }}{{ redis_package_extension }}
+    dest: /{{ redis_install_dir }}
+    copy: false
+  when: redis_status.stat.exists == false or redis_status.stat.isdir == false
+
+- name: Making redis
+  make:
+    chdir: /{{ redis_install_dir }}/{{ redis_version }}
+  when: redis_status.stat.exists == false or redis_status.stat.isdir == false
+
+- name: Cleaning up installation by removing downloaded tarball
+  file:
+    path: /{{ redis_download_path }}/{{ redis_version }}{{ redis_package_extension }}
+    state: absent

@@ -1,0 +1,5 @@
+---
+redis_version: redis-3.2.8
+redis_package_extension: .tar.gz
+redis_download_path: tmp
+redis_install_dir: usr/local
