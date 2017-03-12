@@ -1,21 +1,56 @@
 ---
 - name: node1 redis setup
   hosts: node1
-  become_user: root
+  become_user: "{{ redis_user }}"
   become: yes
+  vars:
+    conf_type: "{{ redis_master }}"
   roles:
     - redis
+  tags: node1
 
 - name: node2 redis setup
   hosts: node2
-  become_user: root
+  become_user: "{{ redis_user }}"
   become: yes
+  vars:
+    redis_slaveof: 192.168.10.11 6379
   roles:
     - redis
+  tags: node2
 
 - name: node3 redis setup
   hosts: node3
-  become_user: root
+  become_user: "{{ redis_user }}"
   become: yes
+  vars:
+    - redis_slaveof: 192.168.10.11 6379
   roles:
     - redis
+  tags: node3
+
+- name: node4 redis setup
+  hosts: node4
+  become_user: "{{ redis_user }}"
+  become: yes
+  vars:
+   - redis_sentinel_monitors:
+     - name: mymaster
+       host: 192.168.10.11
+       port: 6379
+  roles:
+    - redis
+  tags: node4
+
+- name: node5 redis setup
+  hosts: node5
+  become_user: "{{ redis_user }}"
+  become: yes
+  vars:
+    - redis_sentinel_monitors:
+       - name: mymaster
+         host: 192.168.10.11
+         port: 6379
+  roles:
+    - redis
+  tags: node5

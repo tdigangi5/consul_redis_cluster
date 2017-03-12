@@ -7,7 +7,7 @@
 # you're doing.
 Vagrant.configure(2) do |config|
   # Create node1
-  N = 3
+  N = 5
   (1..N).each do |machine_id|
   config.vm.define "node#{machine_id}" do |app_config|
       app_config.vm.box = "centos/7"
