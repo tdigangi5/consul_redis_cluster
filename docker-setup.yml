@@ -1,6 +1,6 @@
 ---
 - name: "Provision a Docker engine"
-- hosts: all
+  hosts: all
   become_user: root
   become: yes
   roles:
