@@ -1,0 +1,7 @@
+---
+- name: "Provision a Docker Swarm cluster"
+  hosts: all
+  become_user: root
+  become: yes
+  roles:
+    - dockerswarm

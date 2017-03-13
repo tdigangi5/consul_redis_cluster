@@ -1,2 +1,3 @@
 .vagrant/
 redis-setup.retry
+dockerswarm-setup.retry

@@ -1,0 +1,5 @@
+---
+- name: "Provision a Docker Swarm cluster"
+  hosts: node1
+  roles:
+    - consul
