@@ -1,0 +1,8 @@
+---
+hosts: localhost
+tasks:
+- action: uri url=http://192.168.10.11:8500 return_content=yes
+  register: consul_ui
+
+- fail: msg='service is not happy'
+  when: "'AWESOME' not in consul_ui.content"

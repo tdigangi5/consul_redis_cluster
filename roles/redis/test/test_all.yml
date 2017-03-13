@@ -5,24 +5,24 @@
 - hosts: all
   remote_user: root
   vars:
-    redis_version: 3.0.7
-    redis_password: ant1r3z
+    redis_version: 3.2.8
+    redis_password: redis
     redis_travis_ci: true
   roles:
-    - role: ../../ansible-redis
+    - role: ../../redis
       redis_port: 7379
 
-    - role: ../../ansible-redis
+    - role: ../../redis
       redis_port: 8379
-      redis_slaveof: 127.0.0.1 7379
+      redis_slaveof: 192.168.10.11 7379
       redis_local_facts: false
 
-    - role: ../../ansible-redis
+    - role: ../../redis
       redis_sentinel: true
       redis_sentinel_port: 27379
       redis_sentinel_monitors:
-        - name: master01
-          host: 127.0.0.1
+        - name: mymaster
+          host: 192.168.10.11
           port: 7379
           quorum: 1
           auth_pass: "{{ redis_password }}"

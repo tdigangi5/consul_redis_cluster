@@ -1,5 +1,25 @@
 # consul_redis_cluster
-This document will stand up fully clustered instances of consul and redis on 3 nodes.
+This document will stand up fully clustered instances of consul and redis on 5 nodes and
+meant to mimic a prod like environment as opposed to a local development env.
+The nodes all run on CentOS7 and run an initial yum update, meaning the initial setup may 
+take a while >20minutes depending on the speed of your internet connection.
+
+## Installation
+* `cd /path/to/consul_redis_cluster`
+* `vagrant up`
+
+## Setup Overview
+### Redis
+* Setup on 5 VMs
+  * 1 Master
+  * 2 Slaves
+  * 2 Sentinel Servers
+
+### Consul
+  * Setup across 5 VMs in docker containers
+    * 1 Server primary
+    * 1 Server secondary
+    * 3 clients
 
 ##Requirements
 * Install Ansible
@@ -7,10 +27,6 @@ This document will stand up fully clustered instances of consul and redis on 3 n
 * Install Vagrant
 * Open connection to the internet(Not proxy configured)
 * Mac OS X (Not tested in windows)
-
-## Installation
-* `cd /path/to/consul_redis_cluster`
-* `vagrant up`
 
 #### Note
 Validated software versions

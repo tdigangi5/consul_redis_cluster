@@ -5,8 +5,8 @@
     redis_travis_ci: true
     redis_sentinel: true
     redis_sentinel_monitors:
-      - name: master01
-        host: localhost
+      - name: mymaster
+        host: 192.168.10.11
         port: 6379
   roles:
-    - ../../ansible-redis
+    - ../../redis

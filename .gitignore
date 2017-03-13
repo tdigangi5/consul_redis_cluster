@@ -1,3 +1,4 @@
 .vagrant/
 redis-setup.retry
-dockerswarm-setup.retry
+docker-setup.retry
+consul-setup.retry

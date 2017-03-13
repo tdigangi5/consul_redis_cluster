@@ -1,5 +1,71 @@
 ---
-- name: "Provision a Docker Swarm cluster"
+- name: "Provision consul server"
   hosts: node1
+  gather_facts: yes
+  pre_tasks:
+    - debug: var=ansible_all_ipv4_addresses
+    - set_fact:
+        man_ip: "{{ item }}"
+      with_items: "{{ ansible_all_ipv4_addresses }}"
+      when: "item.startswith('192')"
+    - debug: var=man_ip
+  vars:
+    consul_server: 'server_primary'
+  roles:
+    - consul
+
+- name: "Provision consul server"
+  hosts: node2
+  pre_tasks:
+    - debug: var=ansible_all_ipv4_addresses
+    - set_fact:
+        man_ip: "{{ item }}"
+      with_items: "{{ ansible_all_ipv4_addresses }}"
+      when: "item.startswith('192')"
+    - debug: var=man_ip
+  vars:
+    consul_server: 'server_secondary'
+  roles:
+    - consul
+
+- name: "Provision consul client"
+  hosts: node3
+  pre_tasks:
+    - debug: var=ansible_all_ipv4_addresses
+    - set_fact:
+        man_ip: "{{ item }}"
+      with_items: "{{ ansible_all_ipv4_addresses }}"
+      when: "item.startswith('192')"
+    - debug: var=man_ip
+  vars:
+    consul_server: 'client'
+  roles:
+    - consul
+
+- name: "Provision a Docker Swarm cluster"
+  hosts: node4
+  pre_tasks:
+    - debug: var=ansible_all_ipv4_addresses
+    - set_fact:
+        man_ip: "{{ item }}"
+      with_items: "{{ ansible_all_ipv4_addresses }}"
+      when: "item.startswith('192')"
+    - debug: var=man_ip
+  vars:
+    consul_server: 'client'
+  roles:
+    - consul
+
+- name: "Provision a Docker Swarm cluster"
+  hosts: node5
+  pre_tasks:
+    - debug: var=ansible_all_ipv4_addresses
+    - set_fact:
+        man_ip: "{{ item }}"
+      with_items: "{{ ansible_all_ipv4_addresses }}"
+      when: "item.startswith('192')"
+    - debug: var=man_ip
+  vars:
+    consul_server: 'client'
   roles:
     - consul
