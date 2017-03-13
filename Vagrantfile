@@ -7,7 +7,7 @@
 # you're doing.
 Vagrant.configure(2) do |config|
   # Create node1
-  N = 2
+  N = 5
   (1..N).each do |machine_id|
   config.vm.define "node#{machine_id}" do |app_config|
       app_config.vm.box = "centos/7"
@@ -19,11 +19,11 @@ Vagrant.configure(2) do |config|
       app_config.vm.provision "shell", path: "server_setup.sh"
       # Launching ansible playbook after all VMs are up and running
       if machine_id == N
-        # app_config.vm.provision :ansible do |ansible|
-        #   ansible.limit = "all"
-        #   #ansible.inventory_path = "./inventories"
-        #   ansible.playbook = "redis-setup.yml"
-        # end
+        app_config.vm.provision :ansible do |ansible|
+          ansible.limit = "all"
+          #ansible.inventory_path = "./inventories"
+          ansible.playbook = "redis-setup.yml"
+        end
         app_config.vm.provision :ansible do |ansible|
           ansible.limit = "all"
           #ansible.inventory_path = "./inventories"

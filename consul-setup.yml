@@ -12,7 +12,7 @@
   vars:
     consul_server: 'server_primary'
   roles:
-    - consul
+    - consul_cluster
 
 - name: "Provision consul server"
   hosts: node2
@@ -26,7 +26,7 @@
   vars:
     consul_server: 'server_secondary'
   roles:
-    - consul
+    - consul_cluster
 
 - name: "Provision consul client"
   hosts: node3
@@ -40,7 +40,7 @@
   vars:
     consul_server: 'client'
   roles:
-    - consul
+    - consul_cluster
 
 - name: "Provision a Docker Swarm cluster"
   hosts: node4
@@ -54,7 +54,7 @@
   vars:
     consul_server: 'client'
   roles:
-    - consul
+    - consul_cluster
 
 - name: "Provision a Docker Swarm cluster"
   hosts: node5
@@ -68,4 +68,4 @@
   vars:
     consul_server: 'client'
   roles:
-    - consul
+    - consul_cluster

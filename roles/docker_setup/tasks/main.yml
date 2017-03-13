@@ -1,0 +1,68 @@
+- name: Include "{{ansible_os_family}}" tasks
+  include: "{{ansible_os_family}}.yml"
+
+- name: Install python-pip.
+  package:
+    name: "python-pip"
+    state: present
+
+- name: Install docker-py 1.9.0 to fix Ansible issue 17495
+  pip:
+    name: docker-py
+    version: 1.9.0
+    state: present
+  when: ansible_version is defined
+    and ansible_version.full | version_compare('2.2.0.0', '<')
+
+- name: Install docker-py
+  pip:
+    name: docker-py
+    state: present
+  when: (ansible_version is not defined) or (ansible_version is defined
+    and ansible_version.full | version_compare('2.2.0.0', '>='))
+
+- name: ensure "docker" group present
+  group:
+    name: docker
+    state: present
+    system: yes
+
+- name: add users into "docker"
+  user:
+    append: yes
+    groups: docker
+    state: present
+    name: '{{ item }}'
+  with_items: '{{ docker_users or [] }}'
+  notify:
+  - restart docker
+
+- name: Set DOCKER_OPTS
+  lineinfile:
+    dest: /etc/default/docker
+    regexp: 'DOCKER_OPTS='
+    line: 'DOCKER_OPTS="{{docker_opts}}"'
+  when: docker_opts != ""
+  notify:
+  - restart docker
+
+# Enable to read the docker default values
+- lineinfile:
+    dest: /lib/systemd/system/docker.service
+    insertbefore: '^ExecStart='
+    line: 'EnvironmentFile=/etc/default/docker'
+  notify:
+  - reload systemctl
+  - restart docker
+  when: ansible_distribution == "Debian"
+
+- lineinfile:
+    dest: /lib/systemd/system/docker.service
+    regexp: '^(ExecStart=)(.*)(-H fd://)$'
+    line: '\1\2\3 $DOCKER_OPTS'
+    backrefs: yes
+  notify:
+  - reload systemctl
+  - restart docker
+  when: (ansible_distribution == "RedHat" and ansible_distribution_major_version == "7") or
+        (ansible_distribution == "Debian" )

@@ -1,0 +1,50 @@
+---
+
+- name: Verifying docker install
+  command: docker -v
+
+- name: Pull image
+  docker_image:
+    name: "{{ consul_image }}"
+
+- name: Create master container
+  docker_container:
+    name: "{{ consul_container_name }}"
+    image: "{{ consul_image }}"
+    state: started
+    env:
+      CONSUL_CLIENT_INTERFACE: eth1
+      CONSUL_LOCAL_CONFIG: {"skip_leave_on_interrupt": true}
+    network_mode: "{{ consul_network }}"
+    published_ports:
+      - 8500:8500
+    command: consul agent -server -client={{ man_ip }} -ui -bind={{ man_ip }} -retry-join=192.168.10.11 -bootstrap-expect=2 -data-dir=/tmp/consul
+    restart_policy: always
+  when: consul_server == 'server_primary'
+
+- name: Create master secondary container
+  docker_container:
+    name: "{{ consul_container_name }}"
+    image: "{{ consul_image }}"
+    state: started
+    env:
+      CONSUL_CLIENT_INTERFACE: eth1
+      CONSUL_LOCAL_CONFIG: {"skip_leave_on_interrupt": true}
+    network_mode: "{{ consul_network }}"
+    published_ports:
+      - 8500:8500
+    command: consul agent -server -bind={{ man_ip }} -retry-join=192.168.10.11 -bootstrap-expect=2 -data-dir=/tmp/consul
+    restart_policy: always
+  when: consul_server == 'server_secondary'
+
+- name: Create client container
+  docker_container:
+    name: "{{ consul_container_name }}"
+    image: "{{ consul_image }}"
+    state: started
+    env:
+      CONSUL_LOCAL_CONFIG: {"skip_leave_on_interrupt": true}
+    network_mode: "{{ consul_network }}"
+    command: consul agent -bind={{ man_ip }} -retry-join=192.168.10.11 -data-dir=/tmp/consul
+    restart_policy: always
+  when: consul_server == 'client'

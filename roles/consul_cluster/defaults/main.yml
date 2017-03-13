@@ -1,0 +1,5 @@
+---
+
+consul_network: 'host'
+consul_image: 'consul'
+consul_container_name: 'consul'

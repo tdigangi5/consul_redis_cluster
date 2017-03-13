@@ -1,16 +1,10 @@
 ---
-# - name: "Provision a Docker engine"
-#   hosts: all
-#   become_user: root
-#   become: yes
-#   roles:
-#     - docker
-
+- name: "Provision a Docker engine"
 - hosts: all
   become_user: root
   become: yes
   roles:
-    - docker
+    - docker_setup
   post_tasks:
     - name: pausing for docker restart
       pause:

@@ -1,0 +1,16 @@
+galaxy_info:
+  author: clayman74
+  description: Consul Agent into Docker container
+
+  license: MIT
+
+  min_ansible_version: 2.2
+
+  platforms:
+    - name: Debian
+      versions:
+         - jessie
+
+  galaxy_tags: ['docker', 'consul']
+
+dependencies: []
