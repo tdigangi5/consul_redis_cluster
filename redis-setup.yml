@@ -39,7 +39,7 @@
        host: 192.168.10.11
        port: 6379
   roles:
-    - redis_cluster
+    - redis_ha_cluster
   tags: node4
 
 - name: node5 redis setup
