@@ -4,7 +4,6 @@
   tasks:
     - local_action: uri url=http://192.168.10.11:8500 return_content=yes
       register: consul_ui
-    # - debug: msg="{{ consul_ui.status }}"
     - fail: msg='Consul is not up'
       when: consul_ui.status != 200
 
@@ -33,7 +32,7 @@
       when: redis_network.stdout != "PONG"
 
 - name: testing sentinels
-  hosts: redis-sentinel
+  hosts: node1 node2
   tasks:
     - name: testing sential master detection
       shell: /opt/redis/bin/redis-cli -h 192.168.10.14 -p 26379 -a redis SENTINEL masters | grep mymaster

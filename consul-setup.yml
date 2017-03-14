@@ -28,35 +28,7 @@
     - consul_cluster
 
 - name: "Provision consul client"
-  hosts: node3
-  pre_tasks:
-    - debug: var=ansible_all_ipv4_addresses
-    - set_fact:
-        man_ip: "{{ item }}"
-      with_items: "{{ ansible_all_ipv4_addresses }}"
-      when: "item.startswith('192')"
-    - debug: var=man_ip
-  vars:
-    consul_server: 'client'
-  roles:
-    - consul_cluster
-
-- name: "Provision a Docker Swarm cluster"
-  hosts: node4
-  pre_tasks:
-    - debug: var=ansible_all_ipv4_addresses
-    - set_fact:
-        man_ip: "{{ item }}"
-      with_items: "{{ ansible_all_ipv4_addresses }}"
-      when: "item.startswith('192')"
-    - debug: var=man_ip
-  vars:
-    consul_server: 'client'
-  roles:
-    - consul_cluster
-
-- name: "Provision a Docker Swarm cluster"
-  hosts: node5
+  hosts: node3 node4 node5
   pre_tasks:
     - debug: var=ansible_all_ipv4_addresses
     - set_fact:
