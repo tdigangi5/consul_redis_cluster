@@ -1,5 +1,5 @@
 ---
-- name: node1 redis setup
+- name: master-setup
   hosts: node1
   become_user: "{{ redis_user }}"
   become: yes
@@ -7,50 +7,28 @@
     conf_type: "{{ redis_master }}"
   roles:
     - redis_ha_cluster
-  tags: node1
+  tags: master
 
-- name: node2 redis setup
-  hosts: node2
+- name: slave-setup
+  hosts: node2 node3
   become_user: "{{ redis_user }}"
   become: yes
   vars:
     redis_slaveof: 192.168.10.11 6379
   roles:
     - redis_ha_cluster
-  tags: node2
+  tags: slave
 
-- name: node3 redis setup
-  hosts: node3
+- name: sentinel-setup
+  hosts: node4 node5
   become_user: "{{ redis_user }}"
   become: yes
   vars:
-    - redis_slaveof: 192.168.10.11 6379
-  roles:
-    - redis_ha_cluster
-  tags: node3
-
-- name: node4 redis setup
-  hosts: node4
-  become_user: "{{ redis_user }}"
-  become: yes
-  vars:
-   - redis_sentinel_monitors:
-     - name: mymaster
-       host: 192.168.10.11
-       port: 6379
-  roles:
-    - redis_ha_cluster
-  tags: node4
-
-- name: node5 redis setup
-  hosts: node5
-  become_user: "{{ redis_user }}"
-  become: yes
-  vars:
+    - redis_sentinel: True
     - redis_sentinel_monitors:
        - name: mymaster
          host: 192.168.10.11
          port: 6379
   roles:
     - redis_ha_cluster
-  tags: node5
+  tags: Sentienel

@@ -1,8 +1,50 @@
 ---
-hosts: localhost
-tasks:
-- action: uri url=http://192.168.10.11:8500 return_content=yes
-  register: consul_ui
+- name: testing consul web ui
+  hosts: localhost
+  tasks:
+    - local_action: uri url=http://192.168.10.11:8500 return_content=yes
+      register: consul_ui
+    # - debug: msg="{{ consul_ui.status }}"
+    - fail: msg='Consul is not up'
+      when: consul_ui.status != 200
 
-- fail: msg='service is not happy'
-  when: "'AWESOME' not in consul_ui.content"
+- name: testing servers
+  hosts: node1
+  tasks:
+    - name: testing consul cluster
+      shell: docker exec -t consul consul members -rpc-addr=192.168.10.11:8400 | grep alive | awk '{ print $2 }' | wc -w
+      register: consul_cluster
+
+    - fail: msg='Consul cluster was not stood up all the way'
+      when: consul_cluster.stdout != "5"
+
+    - name: testing redis status
+      shell: systemctl status redis_6379.service | grep "active (running)" | wc -l
+      register: redis_status
+
+    - fail: msg='Consul cluster was not stood up all the way'
+      when: redis_status.stdout != "1"
+
+    - name: testing redis network
+      shell: /opt/redis/bin/redis-cli -h 192.168.10.11 -a redis PING
+      register: redis_network
+
+    - fail: msg='redis server network is down'
+      when: redis_network.stdout != "PONG"
+
+- name: testing sentinels
+  hosts: redis-sentinel
+  tasks:
+    - name: testing sential master detection
+      shell: /opt/redis/bin/redis-cli -h 192.168.10.14 -p 26379 -a redis SENTINEL masters | grep mymaster
+      register: sentinel_detect
+
+    - fail: msg='master is not attacted to sentinel'
+      when: sentinel_detect.stdout != "mymaster"
+
+    - name: testing sential network detection
+      shell: /opt/redis/bin/redis-cli -h 192.168.10.15 -p 26379 -a redis ping
+      register: sentinel_detect
+
+    - fail: msg='Sentienel network down'
+      when: sentinel_detect.stdout != "PONG"

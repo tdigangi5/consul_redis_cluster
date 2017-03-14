@@ -2,3 +2,4 @@
 redis-setup.retry
 docker-setup.retry
 consul-setup.retry
+test-setup.retry

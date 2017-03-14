@@ -1,7 +1,6 @@
 ---
 - name: "Provision consul server"
   hosts: node1
-  gather_facts: yes
   pre_tasks:
     - debug: var=ansible_all_ipv4_addresses
     - set_fact:

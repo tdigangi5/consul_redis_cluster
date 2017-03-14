@@ -24,16 +24,21 @@ Vagrant.configure(2) do |config|
           #ansible.inventory_path = "./inventories"
           ansible.playbook = "redis-setup.yml"
         end
-        app_config.vm.provision :ansible do |ansible|
-          ansible.limit = "all"
-          #ansible.inventory_path = "./inventories"
-          ansible.playbook = "docker-setup.yml"
-        end
-        app_config.vm.provision :ansible do |ansible|
-          ansible.limit = "all"
-          #ansible.inventory_path = "./inventories"
-          ansible.playbook = "consul-setup.yml"
-        end
+        # app_config.vm.provision :ansible do |ansible|
+        #   ansible.limit = "all"
+        #   #ansible.inventory_path = "./inventories"
+        #   ansible.playbook = "docker-setup.yml"
+        # end
+        # app_config.vm.provision :ansible do |ansible|
+        #   ansible.limit = "all"
+        #   #ansible.inventory_path = "./inventories"
+        #   ansible.playbook = "consul-setup.yml"
+        # end
+        # app_config.vm.provision :ansible do |ansible|
+        #   ansible.limit = "all"
+        #   #ansible.inventory_path = "./inventories"
+        #   ansible.playbook = "test-setup.yml"
+        # end
       end
     end
   end
